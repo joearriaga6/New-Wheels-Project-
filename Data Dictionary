@@ -1,5 +1,3 @@
-# New Wheels Data Dictionary
-
 shipper_id: Unique ID of the Shipper    
 shipper_name: Name of the Shipper
 shipper_contact_details: Contact detail of the Shipper
