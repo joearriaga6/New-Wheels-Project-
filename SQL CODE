@@ -31,10 +31,10 @@ SELECT *
 FROM  
 ( 
 SELECT  
-state, 
-vehicle_maker, 
-COUNT(customer_id) AS total_customers, 
-RANK() OVER (PARTITION BY state ORDER BY COUNT(customer_id) DESC) AS vehicle_ranking 
+	state, 
+	vehicle_maker, 
+	COUNT(customer_id) AS total_customers, 
+	RANK() OVER (PARTITION BY state ORDER BY COUNT(customer_id) DESC) AS vehicle_ranking 
 FROM product_t 
 JOIN order_t USING (product_id) 
 JOIN customer_t USING (customer_id) 
@@ -58,13 +58,15 @@ WHEN customer_feedback = 'very good' THEN '5'
 END AS total_rating 
 FROM order_t 
 ) 
+
 SELECT  
-ROUND(AVG(total_rating), 2) AS average_total_rating
+	ROUND(AVG(total_rating), 2) AS average_total_rating
 FROM customer_rating; 
 WITH customer_rating AS ( 
+
 SELECT 
-customer_feedback, 
-quarter_number,                             
+	customer_feedback, 
+	quarter_number,                             
 CASE WHEN customer_feedback = 'very bad' THEN '1' 
 WHEN customer_feedback = 'bad' THEN '2' 
 WHEN customer_feedback = 'okay' THEN '3' 
@@ -74,8 +76,8 @@ END AS total_rating
 FROM order_t 
 ) 
 SELECT  
-quarter_number, 
-ROUND(AVG(total_rating), 2) AS rating_per_quarter
+	quarter_number, 
+	ROUND(AVG(total_rating), 2) AS rating_per_quarter
 FROM customer_rating  
 GROUP BY quarter_number 
 ORDER BY quarter_number;
@@ -84,24 +86,24 @@ ORDER BY quarter_number;
 
 WITH feedback_customer AS ( 
 SELECT  
-quarter_number, 
-SUM(CASE WHEN customer_feedback = 'Very Good' THEN 1 ELSE 0 END) AS VERY_GOOD, 
-SUM(CASE WHEN customer_feedback = 'Good' THEN 1 ELSE 0 END) AS GOOD, 
-SUM(CASE WHEN customer_feedback = 'Okay' THEN 1 ELSE 0 END) AS OKAY, 
-SUM(CASE WHEN customer_feedback = 'Bad' THEN 1 ELSE 0 END) AS BAD, 
-SUM(CASE WHEN customer_feedback = 'Very Bad' THEN 1 ELSE 0 END) AS VERY_BAD, 
-COUNT(customer_feedback) AS FEEDBACK 
+	quarter_number, 
+	SUM(CASE WHEN customer_feedback = 'Very Good' THEN 1 ELSE 0 END) AS VERY_GOOD, 
+	SUM(CASE WHEN customer_feedback = 'Good' THEN 1 ELSE 0 END) AS GOOD, 
+	SUM(CASE WHEN customer_feedback = 'Okay' THEN 1 ELSE 0 END) AS OKAY, 
+	SUM(CASE WHEN customer_feedback = 'Bad' THEN 1 ELSE 0 END) AS BAD, 
+	SUM(CASE WHEN customer_feedback = 'Very Bad' THEN 1 ELSE 0 END) AS VERY_BAD, 
+	COUNT(customer_feedback) AS FEEDBACK 
 FROM order_t 
 GROUP BY quarter_number 
 ORDER BY quarter_number 
 ) 
 SELECT 
-quarter_number,  
-ROUND((VERY_GOOD/FEEDBACK), 2) AS VERY_GOOD, 
-ROUND((GOOD/FEEDBACK), 2) AS GOOD, 
-ROUND((OKAY/FEEDBACK), 2) AS OKAY, 
-ROUND((BAD/FEEDBACK), 2) AS BAD, 
-ROUND((VERY_BAD/FEEDBACK), 2) AS VERY_BAD 
+	quarter_number,  
+	ROUND((VERY_GOOD/FEEDBACK), 2) AS VERY_GOOD, 
+	ROUND((GOOD/FEEDBACK), 2) AS GOOD, 
+	ROUND((OKAY/FEEDBACK), 2) AS OKAY, 
+	ROUND((BAD/FEEDBACK), 2) AS BAD, 
+	ROUND((VERY_BAD/FEEDBACK), 2) AS VERY_BAD 
 FROM feedback_customer 
 GROUP BY quarter_number                     
 ORDER BY quarter_number; 
@@ -109,8 +111,8 @@ ORDER BY quarter_number;
 -- Question 6
 
 SELECT  
-quarter_number, 
-COUNT(order_id) AS TOTAL_ORDERS 
+	quarter_number, 
+	COUNT(order_id) AS TOTAL_ORDERS 
 FROM order_t 
 GROUP BY quarter_number 
 ORDER BY quarter_number; 
@@ -118,13 +120,11 @@ ORDER BY quarter_number;
 -- Question 7
 
 WITH quart_rev AS (
-    SELECT 
-        quarter_number,
-        ROUND(SUM(quantity * (vehicle_price - ((discount / 100) * vehicle_price))), 0) AS revenue
-    FROM 
-        order_t
-    GROUP BY 
-        quarter_number
+SELECT 
+    quarter_number,
+    ROUND(SUM(quantity * (vehicle_price - ((discount / 100) * vehicle_price))), 0) AS revenue
+FROM order_t
+GROUP BY quarter_number
 )
 SELECT 
     quarter_number,
